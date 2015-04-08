@@ -14,5 +14,4 @@ def think(state, quip):
 
     state.apply_move(random_move)
 
-
 __author__ = 'Alec Noble and Delmy Reyes'
