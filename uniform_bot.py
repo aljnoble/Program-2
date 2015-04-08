@@ -1,7 +1,12 @@
+import random
+
+
 def think(state, quip):
-    moves = {}
-    for move in state.get_moves():
-        moves = [move, state.get_moves(move)]
-    state.apply_move(moves.choice())
+
+    moves = state.get_moves()
+    print moves
+    state = state.apply_move(random.choice(moves))
+    print state
+    return state
 
 __author__ = 'Alec Noble and Delmy Reyes'
