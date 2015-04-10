@@ -1,24 +1,33 @@
+import random
+
+
 def think(state, quip):
-    best_action = None
-    max_gains = 0
+    moves = state.get_moves()
 
-    for move in state.get_moves():
-        curr_move = state.apply_move(move)
-        curr_score = state.get_score()
+    best_move = moves[0]
+    best_expectation = float('-inf')
 
-        if best_action is None:
-            best_action = curr_move
-            max_gains = curr_score
+    me = state.get_whos_turn()
 
-        elif max_gains < curr_score:
-            best_action = curr_move
-            max_gains = curr_score
-
+    def outcome(score):
+        if me == 'red':
+            return score['red'] - score['blue']
         else:
-            pass
+            return score['blue'] - score['red']
 
-        # TODO: This is doing the exact same thing as uniform_bot, maybe I'm missing a key concept here.
-        state.apply_move(best_action)
+    for move in moves:
 
+        total_score = 0.0
+        random_state = state.copy()
+        random_move = random.choice(random_state.get_moves())
+        random_state.apply_move(random_move)
+        total_score += outcome(random_state.get_score())
+
+        if total_score > best_expectation:
+            best_expectation = total_score
+            best_move = random_move
+
+    print "Picking %s with expected score %f" % (str(best_move), best_expectation)
+    return best_move
 
 __author__ = 'Alec Noble and Delmy Reyes'
