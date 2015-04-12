@@ -15,29 +15,24 @@ def think(state, quip):
     while True:
         iterations += 1
 
-        # Select, Expand, Rollout
         node = rootnode
         copy_state = state.copy()
 
-        # Select
         while node.untriedMoves == [] and node.childNodes != []:  # node is fully expanded and non-terminal
             node = node.UCTSelectChild()
             copy_state.apply_move(node.move)
 
-        # Expand
-        if node.untriedMoves:  # if we can expand (i.e. state/node is non-terminal)
+        if node.untriedMoves:
             m = random.choice(node.untriedMoves)
             copy_state.apply_move(m)
-            node = node.AddChild(m, copy_state)  # add child and descend tree
+            node = node.AddChild(m, copy_state)
 
-        # Rollout - this can often be made orders of magnitude quicker using a state.GetRandomMove() function
-        while copy_state.get_moves():  # while state is non-terminal
+        while copy_state.get_moves():
             state.apply_move(random.choice(copy_state.get_moves()))
 
-        # Backpropagate
-        while node is not None:  # backpropagate from the expanded node and work back to the root node
+        while node is not None:
             node.Update(state.GetResult(
-                node.playerJustMoved))  # state is terminal. Update node with result from POV of node.playerJustMoved
+                node.playerJustMoved))
             node = node.parentNode
 
         time_now = time.time()
@@ -48,39 +43,27 @@ def think(state, quip):
 
 
 class Node:
-    """ A node in the game tree. Note wins is always from the viewpoint of playerJustMoved.
-        Crashes if state not specified.
-    """
 
     def __init__(self, move=None, parent=None, state=None):
-        self.move = move  # the move that got us to this node - "None" for the root node
-        self.parentNode = parent  # "None" for the root node
+        self.move = move
+        self.parentNode = parent
         self.childNodes = []
         self.wins = 0
         self.visits = 0
-        self.untriedMoves = state.get_moves()  # future child nodes
-        self.playerJustMoved = state.get_whos_turn()  # the only part of the state that the Node needs later
+        self.untriedMoves = state.get_moves()
+        self.playerJustMoved = state.get_whos_turn()
 
     def UCTSelectChild(self):
-        """ Use the UCB1 formula to select a child node. Often a constant UCTK is applied so we have
-            lambda c: c.wins/c.visits + UCTK * sqrt(2*log(self.visits)/c.visits to vary the amount of
-            exploration versus exploitation.
-        """
         s = sorted(self.childNodes, key=lambda c: c.wins / c.visits + sqrt(2 * log(self.visits) / c.visits))[-1]
         return s
 
     def AddChild(self, m, s):
-        """ Remove m from untriedMoves and add a new child node for this move.
-            Return the added child node
-        """
         n = Node(move=m, parent=self, state=s)
         self.untriedMoves.remove(m)
         self.childNodes.append(n)
         return n
 
     def Update(self, result):
-        """ Update this node - one additional visit and result additional wins. result must be from the viewpoint of playerJustmoved.
-        """
         self.visits += 1
         self.wins += result
 
