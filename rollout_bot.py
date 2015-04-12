@@ -8,7 +8,7 @@ def think(state, quip):
     moves = state.get_moves()
 
     best_move = moves[0]
-    best_expecation = float('-inf')
+    best_expectation = float('-inf')
 
     me = state.get_whos_turn()
 
@@ -38,9 +38,9 @@ def think(state, quip):
 
         expectation = float(total_score) / ROLLOUTS
 
-        if expectation > best_expecation:
-            best_expecation = expectation
+        if expectation > best_expectation:
+            best_expectation = expectation
             best_move = move
 
-    print "Picking %s with expected score %f" % (str(best_move), best_expecation)
+    print "Picking %s with expected score %f" % (str(best_move), best_expectation)
     return best_move
