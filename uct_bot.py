@@ -22,20 +22,20 @@ def think(state, quip):
         node = rootnode
         copy_state = state.copy()
 
-        while node.untriedMoves == [] and node.childNodes:  # node is fully expanded and non-terminal
+        while node.untriedMoves == [] and node.childNodes != []:  # node is fully expanded and non-terminal
             node = node.UCTSelectChild()
             copy_state.apply_move(node.move)
             print 'loop'
 
-        if node.untriedMoves:
+        if node.untriedMoves != []:
             m = random.choice(node.untriedMoves)
             copy_state.apply_move(m)
             node = node.AddChild(m, copy_state)
 
-        while copy_state.get_moves():
+        while copy_state.get_moves() != []:
             state.apply_move(random.choice(copy_state.get_moves()))
 
-        while node is not None:
+        while node != None:
             node.Update(state.GetResult(
                 node.playerJustMoved))
             node = node.parentNode
@@ -46,7 +46,7 @@ def think(state, quip):
             print 'I gpot hrtr'
             return node.UCTSelectChild(0).move
 
-    sample_rate = float(iterations) / (time_now - time_start)
+        sample_rate = float(iterations) / (time_now - time_start)
 
 
 class Node:
