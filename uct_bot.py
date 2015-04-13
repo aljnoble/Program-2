@@ -45,9 +45,11 @@ def think(state, quip):
 
         if time_now > time_stop:
             print 'I gpot hrtr'
-            return node.UCTSelectChild(0).move
+            print node
+            return node.UCTSelectChild().move
 
         sample_rate = float(iterations) / (time_now - time_start)
+        print sample_rate
 
 
 class Node:
@@ -74,7 +76,7 @@ class Node:
 
     def Update(self, result):
         self.visits += 1
-        self.wins += result
+        self.wins += 1
 
     def __repr__(self):
         return "[M:" + str(self.move) + " W/V:" + str(self.wins) + "/" + str(self.visits) + " U:" + str(
