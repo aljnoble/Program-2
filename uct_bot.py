@@ -8,25 +8,21 @@ THINK_DUR = 1
 def think(state, quip):
     time_start = time.time()
     time_stop = time_start + THINK_DUR
-    print time_start
-    print time_stop
 
 
     iterations = 0
 
     rootnode = Node(state=state)
-    print state.get_moves()
 
     while True:
         iterations += 1
 
         node = rootnode
         copy_state = state.copy()
-        print copy_state.get_moves()
+
         while node.untriedMoves == [] and node.childNodes != []:  # node is fully expanded and non-terminal
             node = node.UCTSelectChild()
             copy_state.apply_move(node.move)
-            print 'loop'
 
         if node.untriedMoves != []:
             m = random.choice(node.untriedMoves)
@@ -39,17 +35,18 @@ def think(state, quip):
 
         while node != None:
             node.Update(copy_state.get_score())
+            top_node = node
             node = node.parentNode
 
         time_now = time.time()
 
         if time_now > time_stop:
-            print 'I gpot hrtr'
-            print node
-            return node.UCTSelectChild().move
+            sample_rate = float(iterations) / (time_now - time_start)
+            print 'Rollouts per Second: ', sample_rate
+            return top_node.UCTSelectChild().move
 
-        sample_rate = float(iterations) / (time_now - time_start)
-        print sample_rate
+        #sample_rate = float(iterations) / (time_now - time_start)
+        #print sample_rate
 
 
 class Node:
@@ -68,7 +65,6 @@ class Node:
         return s
 
     def AddChild(self, m, s):
-        print 'child added'
         n = Node(move=m, parent=self, state=s)
         self.untriedMoves.remove(m)
         self.childNodes.append(n)
