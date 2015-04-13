@@ -15,13 +15,14 @@ def think(state, quip):
     iterations = 0
 
     rootnode = Node(state=state)
+    print state.get_moves()
 
     while True:
         iterations += 1
 
         node = rootnode
         copy_state = state.copy()
-
+        print copy_state.get_moves()
         while node.untriedMoves == [] and node.childNodes != []:  # node is fully expanded and non-terminal
             node = node.UCTSelectChild()
             copy_state.apply_move(node.move)
@@ -33,11 +34,11 @@ def think(state, quip):
             node = node.AddChild(m, copy_state)
 
         while copy_state.get_moves() != []:
-            state.apply_move(random.choice(copy_state.get_moves()))
+            copy_state.apply_move(random.choice(copy_state.get_moves()))
+
 
         while node != None:
-            node.Update(state.GetResult(
-                node.playerJustMoved))
+            node.Update(copy_state.get_score())
             node = node.parentNode
 
         time_now = time.time()
