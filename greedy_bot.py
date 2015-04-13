@@ -30,4 +30,4 @@ def think(state, quip):
     print "Picking %s with expected score %f" % (str(best_move), best_expectation)
     return best_move
 
-__author__ = 'Alec Noble and Delmy Reyes'
+__author__ = 'Alec Noble'

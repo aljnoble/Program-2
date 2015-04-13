@@ -9,4 +9,4 @@ def think(state, quip):
     return random_move
 
 
-__author__ = 'Alec Noble and Delmy Reyes'
+__author__ = 'Alec Noble'

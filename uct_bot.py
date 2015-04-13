@@ -101,4 +101,4 @@ class Node:
         return s
 
 
-__author__ = 'Alec Noble and Delmy Reyes'
+__author__ = 'Alec Noble'
