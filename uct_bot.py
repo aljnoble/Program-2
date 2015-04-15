@@ -2,7 +2,7 @@ from math import *
 import time
 import random
 
-THINK_DUR = 1
+THINK_DUR = 10
 
 
 def think(state, quip):
@@ -50,9 +50,10 @@ def think(state, quip):
         #BackPropagate
 
         while node != None:
-            node.score += copy_state.get_score()[node.who]
-            #print copy_state.get_whos_turn()
-            #print "node.score: %d " %node.score
+            if node.parentNode != None:
+                node.score += copy_state.get_score()[node.parentNode.who]
+                #print copy_state.get_whos_turn()
+                #print "node.score: %d " %node.score
             node.Update(node.score)
             top_node = node
             node = node.parentNode
@@ -79,7 +80,7 @@ class Node:
         self.score = state.get_score()[self.who]
 
     def UCTSelectChild(self):
-        s = sorted(self.childNodes, key=lambda c: (self.score - c.score) + sqrt(2 * log(self.visits) / c.visits))[-1]
+        s = sorted(self.childNodes, key=lambda c: (c.score) + sqrt(2 * log(self.visits) / c.visits))[-1]
         return s
 
     def AddChild(self, m, s):
