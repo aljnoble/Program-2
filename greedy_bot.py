@@ -11,9 +11,9 @@ def think(state, quip):
 
     def outcome(score):
         if me == 'red':
-            return score['red'] - score['blue']
+			return score['red'] - score['blue']
         else:
-            return score['blue'] - score['red']
+			return score['blue'] - score['red']
 
     for move in moves:
 
